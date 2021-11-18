@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>密语</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+        const sock = new WebSocket('ws://' + document.location.host + '/websocket')
+        sock.onopen = (event) => {
+            console.log('WebSocket is open now.')
+        }
+        sock.onerror = (event) => {
+            console.log('WebSocket error observed:', event.error)
+        }
+        sock.onclose = (event) => {
+            console.log('WebSocket is closed now.')
+        }
+        sock.onmessage = (event) => {
+            console.log(event.data)
+        }
+        function send(event) {
+            const msg = document.getElementById('message')
+            sock.send(msg.value)
+            msg.value = ''
+        }
+        function fastSend(event) {
+            if (event.keyCode === 13 && !event.ctrlKey) {
+                event.preventDefault()
+                send(event)
+            }
+        }
+    </script>
+    <input type="text" id="message" onkeydown="fastSend(event);" />
+    <button onclick="send(event);">say !</button>
+</body>
+
+</html>
